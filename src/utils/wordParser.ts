@@ -16,7 +16,7 @@ export interface SmartSlowingConfig {
 const DEFAULT_CONFIG: SmartSlowingConfig = {
   sentenceEndMultiplier: 3.0,
   clauseEndMultiplier: 1.5,
-  longWordMultiplier: 3.0,
+  longWordMultiplier: 2.0,
   paragraphBreakMultiplier: 3.0,
   longWordThreshold: 12,
 };
