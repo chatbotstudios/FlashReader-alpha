@@ -14,11 +14,11 @@ export interface SmartSlowingConfig {
 }
 
 const DEFAULT_CONFIG: SmartSlowingConfig = {
-  sentenceEndMultiplier: 4.0,
+  sentenceEndMultiplier: 3.0,
   clauseEndMultiplier: 1.5,
-  longWordMultiplier: 4.0,
+  longWordMultiplier: 3.0,
   paragraphBreakMultiplier: 3.0,
-  longWordThreshold: 10,
+  longWordThreshold: 12,
 };
 
 export function calculateORP(word: string): number {
