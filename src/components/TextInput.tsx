@@ -87,7 +87,7 @@ This speed reading application uses the RSVP technique: Rapid Serial Visual Pres
             <li>Words appear one at a time with the ORP (Optimal Recognition Point) highlighted in red</li>
             <li>Adjust speed from 100-1000 WPM using the slider</li>
             <li>Smart slowing automatically pauses longer at punctuation and complex words</li>
-            <li>Use spacebar to play/pause, or click the controls</li>
+            <li>Use **Space** to play/pause, **Left/Right** arrows to jump ±5s, and **Up/Down** arrows to adjust WPM</li>
           </ul>
         </div>
       </div>

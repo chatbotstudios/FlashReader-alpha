@@ -79,17 +79,35 @@ export function SpeedReader({ text, onComplete }: SpeedReaderProps) {
     elapsedTimeRef.current = 0;
   }, [currentIndex, wpm]);
 
+  const stepForward = useCallback(() => {
+    const targetIndex = Math.min(words.length - 1, currentIndex + Math.floor(wpm / 12));
+    setCurrentIndex(targetIndex);
+    elapsedTimeRef.current = 0;
+  }, [currentIndex, wpm, words.length]);
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlayPause();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        stepBack();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        stepForward();
+      } else if (e.code === 'ArrowUp') {
+        e.preventDefault();
+        setWpm((prev) => Math.min(1000, prev + 50));
+      } else if (e.code === 'ArrowDown') {
+        e.preventDefault();
+        setWpm((prev) => Math.max(100, prev - 50));
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [togglePlayPause]);
+  }, [togglePlayPause, stepBack, stepForward]);
 
   useEffect(() => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);

@@ -17,9 +17,9 @@ A modern, feature-rich speed-reading application built with React, TypeScript, a
 
 ### 3. Smart Slowing
 Context-aware timing adjustments for improved comprehension:
-- **Sentence endings** (`.`, `!`, `?`): 2.0x base interval
+- **Sentence endings** (`.`, `!`, `?`): 4.0x base interval
 - **Clause endings** (`,`, `;`, `:`): 1.5x base interval
-- **Long words** (>10 characters): 1.2x base interval
+- **Long words** (>10 characters): 4.0x base interval
 - **Paragraph breaks**: 3.0x base interval
 
 ### 4. Input Management
@@ -88,12 +88,12 @@ function calculateDelay(word: string, isParaBreak: boolean): number {
 
   const lastChar = word.slice(-1);
   if (['.', '!', '?'].includes(lastChar)) {
-    multiplier *= 2.0;
+    multiplier *= 4.0;
   } else if ([',', ';', ':'].includes(lastChar)) {
     multiplier *= 1.5;
   }
 
-  if (word.length > 10) multiplier *= 1.2;
+  if (word.length > 10) multiplier *= 4.0;
 
   return multiplier;
 }
