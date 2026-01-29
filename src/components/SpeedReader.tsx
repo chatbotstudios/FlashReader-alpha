@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { WordDisplay } from './WordDisplay';
+import { TextProgression } from './TextProgression';
 import { parseText, ParsedWord, calculateTotalTime } from '../utils/wordParser';
 import { Play, Pause, RotateCcw, Rewind } from 'lucide-react';
 
@@ -157,9 +158,13 @@ export function SpeedReader({ text, onComplete }: SpeedReaderProps) {
   const currentWord = words[currentIndex];
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 flex items-center justify-center">
+    <div className="flex flex-col h-full gap-8">
+      <div className="flex-1 flex items-center justify-center min-h-[160px]">
         <WordDisplay word={currentWord.text} orpIndex={currentWord.orpIndex} />
+      </div>
+
+      <div className="w-full">
+        <TextProgression words={words} currentIndex={currentIndex} />
       </div>
 
       <div

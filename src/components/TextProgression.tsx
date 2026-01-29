@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { ParsedWord } from '../utils/wordParser';
 
 interface TextProgressionProps {
@@ -8,134 +8,75 @@ interface TextProgressionProps {
 
 export function TextProgression({ words, currentIndex }: TextProgressionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const activeWordRef = useRef<HTMLSpanElement>(null);
 
-  const getVisibleSentences = () => {
-    const text = words.map(w => w.text).join(' ');
-    const sentences = text
-      .split(/(?<=[.!?])\s+/)
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
+  const currentWord = words[currentIndex];
+  const currentSentenceIndex = currentWord?.sentenceIndex ?? 0;
 
-    const wordSequence = words.map(w => w.text);
-    const currentWord = wordSequence[currentIndex] || '';
+  // Calculate the sliding window of sentences (6 sentences: 2 before, 1 current, 3 after)
+  // or (2 before, 4 including current to make it 6 total as requested)
+  // Request: "6-sentence dynamically scrolling Text"
+  // Let's do: current sentence index - 2 to current sentence index + 3 (total 6)
+  const windowRange = useMemo(() => {
+    const start = Math.max(0, currentSentenceIndex - 2);
+    const end = start + 5; // 0,1,2,3,4,5 = 6 sentences
+    return { start, end };
+  }, [currentSentenceIndex]);
 
-    let wordCount = 0;
-    let currentSentenceIndex = 0;
-
-    for (let i = 0; i < sentences.length; i++) {
-      const sentenceWords = sentences[i].split(/\s+/);
-      const sentenceWordCount = sentenceWords.length;
-
-      for (const word of sentenceWords) {
-        if (wordCount === currentIndex) {
-          currentSentenceIndex = i;
-          break;
-        }
-        if (wordSequence[wordCount] === word) {
-          wordCount++;
-        }
-      }
-    }
-
-    const startIndex = Math.max(0, currentSentenceIndex - 2);
-    const endIndex = Math.min(sentences.length, currentSentenceIndex + 4);
-
-    return {
-      sentences: sentences.slice(startIndex, endIndex),
-      startSentenceIndex: startIndex,
-      currentSentenceIndex,
-    };
-  };
-
-  const { sentences, currentSentenceIndex, startSentenceIndex } = getVisibleSentences();
-
-  const getCurrentWordPosition = () => {
-    let position = 0;
-    for (let i = startSentenceIndex; i < currentSentenceIndex; i++) {
-      const sentenceWords = sentences[i - startSentenceIndex].split(/\s+/);
-      position += sentenceWords.length + 1;
-    }
-
-    const currentSentenceWords = sentences[currentSentenceIndex - startSentenceIndex].split(/\s+/);
-    for (let i = 0; i < currentSentenceWords.length; i++) {
-      if (words[currentIndex]?.text === currentSentenceWords[i]) {
-        return position + i;
-      }
-    }
-
-    return position;
-  };
-
-  const textContent = sentences.join(' ');
-  const allTextWords = textContent.split(/\s+/);
-  const currentWordPos = getCurrentWordPosition();
+  // Filter words that belong to the visible sentences
+  const visibleWords = useMemo(() => {
+    return words.filter(
+      (w) => w.sentenceIndex >= windowRange.start && w.sentenceIndex <= windowRange.end
+    );
+  }, [words, windowRange]);
 
   useEffect(() => {
-    if (contentRef.current) {
-      const wordElements = contentRef.current.querySelectorAll('span.word-token');
-      const currentElement = wordElements[currentWordPos] as HTMLElement;
-
-      if (currentElement && containerRef.current) {
-        const containerTop = containerRef.current.getBoundingClientRect().top;
-        const elementTop = currentElement.getBoundingClientRect().top;
-        const offset = elementTop - containerTop;
-
-        containerRef.current.scrollTop += offset - 60;
-      }
+    if (activeWordRef.current && containerRef.current) {
+      activeWordRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
     }
-  }, [currentWordPos]);
+  }, [currentIndex]);
+
+  if (words.length === 0) return null;
 
   return (
-    <div className="relative w-full h-48 px-6 py-4">
+    <div className="relative w-full h-40 px-6 py-4 overflow-hidden border-t border-b border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50">
       <div
         ref={containerRef}
-        className="relative h-full overflow-hidden"
-        style={{
-          background: 'linear-gradient(transparent, rgba(15, 23, 42, 0.8), transparent)',
-        }}
+        className="h-full overflow-y-auto no-scrollbar mask-fade-edge"
       >
-        <div
-          ref={contentRef}
-          className="text-base leading-relaxed text-gray-300 font-serif whitespace-normal"
-          style={{
-            paddingTop: '3rem',
-            paddingBottom: '3rem',
-          }}
-        >
-          {allTextWords.map((word, idx) => (
-            <span
-              key={idx}
-              className={`word-token ${
-                idx === currentWordPos
-                  ? 'text-blue-400 font-semibold'
-                  : idx < currentWordPos
-                    ? 'text-gray-500'
-                    : 'text-gray-400'
-              }`}
-              style={{
-                transition: 'color 0.15s ease-out',
-                marginRight: '0.25em',
-              }}
-            >
-              {word}
-            </span>
-          ))}
+        <div className="text-lg leading-relaxed text-gray-400 dark:text-gray-500 font-serif whitespace-normal py-10 text-center">
+          {visibleWords.map((word, idx) => {
+            const isCurrent = words.indexOf(word) === currentIndex;
+            const isPast = words.indexOf(word) < currentIndex;
+
+            return (
+              <span
+                key={`${word.text}-${idx}`}
+                ref={isCurrent ? activeWordRef : null}
+                className={`inline-block transition-all duration-200 px-1 rounded ${isCurrent
+                    ? 'text-blue-500 dark:text-blue-400 font-bold bg-blue-50/50 dark:bg-blue-900/20'
+                    : isPast
+                      ? 'text-gray-300 dark:text-gray-700'
+                      : 'text-gray-500 dark:text-gray-400'
+                  }`}
+                style={{
+                  marginRight: '0.25em',
+                }}
+              >
+                {word.text}
+              </span>
+            );
+          })}
         </div>
       </div>
 
-      <div
-        className="absolute top-0 left-0 right-0 h-16 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to bottom, rgb(15, 23, 42), transparent)',
-        }}
-      />
-      <div
-        className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to top, rgb(15, 23, 42), transparent)',
-        }}
-      />
+      {/* Overlays for smooth fading at top and bottom */}
+      <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-gray-50 dark:from-gray-950 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-gray-50 dark:from-gray-950 to-transparent pointer-events-none" />
     </div>
   );
 }

@@ -39,10 +39,18 @@ Context-aware timing adjustments for improved comprehension:
 - **Remaining time**: Estimates time to completion
 - **Real-time updates**: All metrics update dynamically
 
-### 7. Smart Control Interface
+### 7. Text Progress Tracking
+- **Dynamic window**: Displays a 6-sentence sliding window (2 before, 4 current/after) to provide context without overwhelming the reader
+- **Synchronized highlighting**: Words are highlighted in blue as they appear in the RSVP display
+- **Active state**: The current word is bolded for immediate visual association
+- **Auto-scrolling**: The view automatically scrolls smoothly to keep the current word centered in the window
+- **Contextual fading**: Top and bottom edges feature a smooth gradient fade to maintain focus on the current reading area
+- **Minimalist integration**: Seamlessly sits between the reading engine and controls, respecting both dark and light modes
+
+### 8. Smart Control Interface
 - **Dynamic fade behavior**: Progress bar, speed slider, and playback controls fade to 50% opacity by default for a clean, immersive reading experience
 - **Smart reveal**: Controls automatically become fully visible (100% opacity) on hover or click
-- **Auto-fade timer**: Controls return to 50% opacity after 6 seconds of inactivity
+- **Auto-fade timer**: Controls return to 50% opacity after 3 seconds of inactivity
 - **Unobtrusive design**: Minimizes visual clutter while keeping controls easily accessible
 
 ## Technology Stack
@@ -129,7 +137,7 @@ The control interface uses an intelligent fade system to reduce visual clutter d
 
 - **Default state**: Controls display at 50% opacity
 - **Interaction**: Hovering over or clicking on controls reveals them at full opacity
-- **Auto-return**: After 6 seconds of inactivity, controls fade back to 50%
+- **Auto-return**: After 3 seconds of inactivity, controls fade back to 50%
 - **Smooth transitions**: 300ms fade duration for fluid visual feedback
 
 This design provides a minimalist aesthetic while maintaining immediate access to controls.
@@ -237,7 +245,6 @@ SwiftRead uses a dark theme by default to reduce eye strain during extended read
 ## Future Enhancements
 
 Potential features for future versions:
-- **Live text progression**: Real-time view of the surrounding text with dynamic scrolling and word highlighting (code already implemented, awaiting UI integration)
 - **EPUB file support**: Better parsing for eBook formats
 - **Reading statistics**: Track reading speed improvements and sessions over time
 - **Customizable color themes**: User-selectable color schemes for different preferences

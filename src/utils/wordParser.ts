@@ -2,6 +2,7 @@ export interface ParsedWord {
   text: string;
   delay: number;
   orpIndex: number;
+  sentenceIndex: number;
 }
 
 export interface SmartSlowingConfig {
@@ -54,22 +55,28 @@ export function calculateDelay(
 export function parseText(text: string, config?: SmartSlowingConfig): ParsedWord[] {
   const paragraphs = text.split(/\n\n+/);
   const words: ParsedWord[] = [];
+  let globalSentenceIndex = 0;
 
   paragraphs.forEach((paragraph, paraIndex) => {
-    const paraWords = paragraph
-      .split(/\s+/)
-      .filter((w) => w.trim().length > 0);
+    // Split paragraph into sentences
+    const sentences = paragraph.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
 
-    paraWords.forEach((word, wordIndex) => {
-      const isParaBreak = wordIndex === 0 && paraIndex > 0;
-      const delay = calculateDelay(word, isParaBreak, config);
-      const orpIndex = calculateORP(word);
+    sentences.forEach((sentence, sentIndex) => {
+      const sentenceWords = sentence.split(/\s+/).filter(w => w.trim().length > 0);
 
-      words.push({
-        text: word,
-        delay,
-        orpIndex,
+      sentenceWords.forEach((word, wordIndex) => {
+        const isParaBreak = paraIndex > 0 && sentIndex === 0 && wordIndex === 0;
+        const delay = calculateDelay(word, isParaBreak, config);
+        const orpIndex = calculateORP(word);
+
+        words.push({
+          text: word,
+          delay,
+          orpIndex,
+          sentenceIndex: globalSentenceIndex,
+        });
       });
+      globalSentenceIndex++;
     });
   });
 
