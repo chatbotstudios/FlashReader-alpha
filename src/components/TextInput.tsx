@@ -1,41 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { FileText, Upload } from 'lucide-react';
 
 interface TextInputProps {
   onTextSubmit: (text: string) => void;
+  showControls: boolean;
 }
 
-export function TextInput({ onTextSubmit }: TextInputProps) {
+export function TextInput({ onTextSubmit, showControls }: TextInputProps) {
   const [inputText, setInputText] = useState('');
-  const [showControls, setShowControls] = useState(false);
-  const hideTimerRef = useRef<number>();
-
-  useEffect(() => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    if (showControls) {
-      hideTimerRef.current = window.setTimeout(() => {
-        setShowControls(false);
-      }, 3000);
-    }
-    return () => {
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    };
-  }, [showControls]);
-
-  const handleMouseEnter = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    setShowControls(true);
-  };
-
-  const handleMouseLeave = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    hideTimerRef.current = window.setTimeout(() => {
-      setShowControls(false);
-    }, 3000);
-  };
 
   const handleInteraction = () => {
-    setShowControls(true);
+    // Parent handles showControls visibility globally
   };
 
   const handleSubmit = () => {
@@ -74,8 +49,6 @@ This speed reading application uses the RSVP technique: Rapid Serial Visual Pres
       style={{
         opacity: showControls ? 1 : 0.25,
       }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       onClick={handleInteraction}
       onFocus={handleInteraction}
     >

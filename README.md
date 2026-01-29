@@ -48,10 +48,10 @@ Context-aware timing adjustments for improved comprehension:
 - **Minimalist integration**: Seamlessly sits between the reading engine and controls, respecting both dark and light modes
 
 ### 8. Smart Control Interface
-- **Dynamic fade behavior**: Progress bar, speed slider, and playback controls fade to 50% opacity by default for a clean, immersive reading experience
-- **Smart reveal**: Controls automatically become fully visible (100% opacity) on hover or click
-- **Auto-fade timer**: Controls return to 50% opacity after 3 seconds of inactivity
-- **Unobtrusive design**: Minimizes visual clutter while keeping controls easily accessible
+- **Synchronized fade behavior**: The page header (FlashRead title and subtitle), progress bar, speed slider, playback controls, and text input area all fade to 25% opacity simultaneously for a clean, immersive reading experience.
+- **Smart reveal**: All interface elements automatically become fully visible (100% opacity) on hover, click, keypress, or any user interaction.
+- **Auto-fade timer**: Elements return to 25% opacity after 3 seconds of inactivity.
+- **Unobtrusive design**: Minimizes visual clutter across the entire application while keeping all functionality immediately accessible.
 
 ## Technology Stack
 
@@ -132,15 +132,15 @@ The Optimal Recognition Point is the character position where the eye naturally 
 
 ## UI/UX Effects & Animations
 
-### Control Panel Fade Behavior
-The control interface uses an intelligent fade system to reduce visual clutter during reading:
+### Global Interface Fade Behavior
+The entire application interface uses an intelligent, synchronized fade system to eliminate visual clutter during reading:
 
-- **Default state**: Controls display at 50% opacity
-- **Interaction**: Hovering over or clicking on controls reveals them at full opacity
-- **Auto-return**: After 3 seconds of inactivity, controls fade back to 50%
-- **Smooth transitions**: 300ms fade duration for fluid visual feedback
+- **Default state**: Header, controls, and input area display at 25% opacity.
+- **Interaction**: Any user interaction (mouse move, click, keypress, touch) reveals all elements at full opacity instantly.
+- **Auto-return**: After 3 seconds of inactivity, elements fade back to 25% for a focused reading experience.
+- **Smooth transitions**: 300ms fade duration for fluid visual feedback.
 
-This design provides a minimalist aesthetic while maintaining immediate access to controls.
+This design provides a minimalist, "zen-like" aesthetic where only the reading material remains prominent, while maintaining immediate access to all tools.
 
 ### Word Display Animations
 Each word transition features a subtle animation:
@@ -201,14 +201,14 @@ npm run build
    - Click "Restart" to begin again
 5. **Monitor progress**: Watch the progress bar and time estimates at the bottom
 
-### Control Panel Behavior
+### Synchronized Interface Behavior
 
-The control panel (progress bar, speed slider, and playback buttons) is designed to stay out of your way:
+The interface elements (header, progress bar, speed slider, playback buttons, and input box) are designed to stay out of your way:
 
-- **Faded by default**: Controls display at 50% opacity to minimize visual distraction
-- **Reveal on demand**: Move your mouse over the controls or click them to reveal at full opacity
-- **Auto-fade**: After 6 seconds without interaction, controls fade back to 50%
-- **Always functional**: All controls remain fully interactive, regardless of opacity level
+- **Faded by default**: Elements display at 25% opacity to minimize visual distraction.
+- **Reveal on demand**: Any interaction with the page reveals all elements at full opacity.
+- **Auto-fade**: After 3 seconds without interaction, the interface fades back to 25%.
+- **Always functional**: All elements remains fully interactive, regardless of opacity level.
 
 ## Tips for Effective Speed Reading
 

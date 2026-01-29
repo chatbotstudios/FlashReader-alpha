@@ -7,19 +7,18 @@ import { Play, Pause, RotateCcw, Rewind } from 'lucide-react';
 interface SpeedReaderProps {
   text: string;
   onComplete?: () => void;
+  showControls: boolean;
 }
 
-export function SpeedReader({ text, onComplete }: SpeedReaderProps) {
+export function SpeedReader({ text, onComplete, showControls }: SpeedReaderProps) {
   const [words, setWords] = useState<ParsedWord[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [wpm, setWpm] = useState(300);
-  const [showControls, setShowControls] = useState(false);
 
   const timeoutRef = useRef<number>();
   const startTimeRef = useRef<number>(0);
   const elapsedTimeRef = useRef<number>(0);
-  const hideTimerRef = useRef<number>();
   const controlsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -110,29 +109,8 @@ export function SpeedReader({ text, onComplete }: SpeedReaderProps) {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [togglePlayPause, stepBack, stepForward]);
 
-  useEffect(() => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    if (showControls) {
-      hideTimerRef.current = window.setTimeout(() => {
-        setShowControls(false);
-      }, 3000);
-    }
-  }, [showControls]);
-
-  const handleControlsMouseEnter = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    setShowControls(true);
-  };
-
-  const handleControlsMouseLeave = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    hideTimerRef.current = window.setTimeout(() => {
-      setShowControls(false);
-    }, 3000);
-  };
-
   const handleControlsInteraction = () => {
-    setShowControls(true);
+    // Parent handles showControls visibility globally
   };
 
   const progress = words.length > 0 ? (currentIndex / words.length) * 100 : 0;
@@ -174,8 +152,6 @@ export function SpeedReader({ text, onComplete }: SpeedReaderProps) {
           opacity: showControls ? 1 : 0.25,
           pointerEvents: showControls ? 'auto' : 'auto',
         }}
-        onMouseEnter={handleControlsMouseEnter}
-        onMouseLeave={handleControlsMouseLeave}
         onClick={handleControlsInteraction}
       >
         <div className="space-y-2">
