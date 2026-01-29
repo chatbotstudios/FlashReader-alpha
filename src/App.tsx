@@ -40,7 +40,7 @@ function App() {
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
               FlashRead
             </h1>
-            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Master speed reading with RSVP</p>
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Master speed reading</p>
           </div>
           <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
         </header>
