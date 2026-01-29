@@ -32,10 +32,19 @@ export function TextProgression({ words, currentIndex }: TextProgressionProps) {
 
   useEffect(() => {
     if (activeWordRef.current && containerRef.current) {
-      activeWordRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'nearest'
+      const container = containerRef.current;
+      const element = activeWordRef.current;
+
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+
+      // Calculate position relative to container
+      const relativeTop = elementRect.top - containerRect.top;
+      const targetScrollTop = container.scrollTop + relativeTop - (container.clientHeight / 2) + (element.offsetHeight / 2);
+
+      container.scrollTo({
+        top: targetScrollTop,
+        behavior: 'smooth'
       });
     }
   }, [currentIndex]);
@@ -48,7 +57,7 @@ export function TextProgression({ words, currentIndex }: TextProgressionProps) {
         ref={containerRef}
         className="h-full overflow-y-auto no-scrollbar mask-fade-edge"
       >
-        <div className="text-lg leading-relaxed text-gray-400 dark:text-gray-500 font-serif whitespace-normal py-10 text-center">
+        <div className="text-lg leading-relaxed text-gray-400 dark:text-gray-500 font-mono whitespace-normal py-10 text-center">
           {visibleWords.map((word, idx) => {
             const isCurrent = words.indexOf(word) === currentIndex;
             const isPast = words.indexOf(word) < currentIndex;
@@ -58,10 +67,10 @@ export function TextProgression({ words, currentIndex }: TextProgressionProps) {
                 key={`${word.text}-${idx}`}
                 ref={isCurrent ? activeWordRef : null}
                 className={`inline-block transition-all duration-200 px-1 rounded ${isCurrent
-                    ? 'text-blue-500 dark:text-blue-400 font-bold bg-blue-50/50 dark:bg-blue-900/20'
-                    : isPast
-                      ? 'text-gray-300 dark:text-gray-700'
-                      : 'text-gray-500 dark:text-gray-400'
+                  ? 'text-blue-500 dark:text-blue-400 font-bold bg-blue-50/50 dark:bg-blue-900/20'
+                  : isPast
+                    ? 'text-gray-300 dark:text-gray-700'
+                    : 'text-gray-500 dark:text-gray-400'
                   }`}
                 style={{
                   marginRight: '0.25em',

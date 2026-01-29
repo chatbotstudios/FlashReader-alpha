@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FileText, Upload } from 'lucide-react';
 
 interface TextInputProps {
@@ -7,6 +7,36 @@ interface TextInputProps {
 
 export function TextInput({ onTextSubmit }: TextInputProps) {
   const [inputText, setInputText] = useState('');
+  const [showControls, setShowControls] = useState(false);
+  const hideTimerRef = useRef<number>();
+
+  useEffect(() => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    if (showControls) {
+      hideTimerRef.current = window.setTimeout(() => {
+        setShowControls(false);
+      }, 3000);
+    }
+    return () => {
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, [showControls]);
+
+  const handleMouseEnter = () => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    setShowControls(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = window.setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+  };
+
+  const handleInteraction = () => {
+    setShowControls(true);
+  };
 
   const handleSubmit = () => {
     if (inputText.trim()) {
@@ -39,7 +69,16 @@ This speed reading application uses the RSVP technique: Rapid Serial Visual Pres
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div
+      className="w-full max-w-4xl mx-auto space-y-6 transition-opacity duration-300"
+      style={{
+        opacity: showControls ? 1 : 0.25,
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleInteraction}
+      onFocus={handleInteraction}
+    >
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 space-y-4 border border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
           <FileText size={20} />
