@@ -38,7 +38,7 @@ function App() {
         <header className="flex justify-between items-start sm:items-center mb-2 sm:mb-4">
           <div className="flex flex-col pr-4">
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-              SwiftRead
+              FlashRead
             </h1>
             <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Master speed reading with RSVP</p>
           </div>
